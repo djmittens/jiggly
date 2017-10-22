@@ -1,5 +1,4 @@
 lazy val `jiggly` = (project in file(".")).
-  enablePlugins(ScalaProject).
   settings (
     publishArtifact := false,
     fork in Test := false,
