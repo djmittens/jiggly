@@ -1,7 +1,6 @@
 lazy val `jiggly` = (project in file(".")).
   settings (
-    publishArtifact := false,
-    fork in Test := false,
+    publishArtifact := false
   ).
   aggregate(`shard`)
 
@@ -13,8 +12,3 @@ lazy val `shard` = (project in file("shard")).
       Actors, Streams, ReactiveKafka
     )
   }
-
-
-
-
-
