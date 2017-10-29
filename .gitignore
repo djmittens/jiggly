@@ -1,4 +1,5 @@
 .idea/
+.ensime*
 *.swp
 .#*
 .class

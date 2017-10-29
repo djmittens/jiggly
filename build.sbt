@@ -5,10 +5,14 @@ lazy val `jiggly` = (project in file(".")).
   aggregate(`shard`)
 
 lazy val `shard` = (project in file("shard")).
-  enablePlugins(ScalaProject, AkkaDependencies).
+  enablePlugins(
+    ScalaProject,
+    GdxDependencies,
+    AkkaDependencies).
   settings {
     import AkkaModules._
+    import LibGdxModules._
     Seq(
-      Actors, Streams, ReactiveKafka
+      Actors, Streams, ReactiveKafka, GdxBullet
     )
   }
