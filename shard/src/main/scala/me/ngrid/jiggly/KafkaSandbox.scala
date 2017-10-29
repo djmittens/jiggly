@@ -11,7 +11,7 @@ import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializ
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
-object MainApp {
+object KafkaSandbox {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   def main(args: Array[String]): Unit = {

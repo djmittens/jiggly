@@ -8,7 +8,12 @@ object GdxDependencies extends AutoPlugin {
     lazy val libGdxVersion = Def.settingKey[String]("version of libgdx to use")
 
     object LibGdxModules {
-      lazy val GdxBullet = libraryDependencies += "com.badlogicgames.gdx" % "gdx-bullet" % libGdxVersion.value
+      lazy val GdxBullet = libraryDependencies +=
+        "com.badlogicgames.gdx" % "gdx-bullet" % libGdxVersion.value
+
+      lazy val GdxBulletNatives = libraryDependencies +=
+        "com.badlogicgames.gdx" % "gdx-bullet-platform" % libGdxVersion.value
+
     }
   }
 
