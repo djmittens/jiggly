@@ -1,3 +1,5 @@
+cancelable in ThisBuild := true
+
 lazy val `jiggly` = (project in file(".")).
   settings (
     publishArtifact := false
@@ -13,6 +15,7 @@ lazy val `shard` = (project in file("shard")).
     import AkkaModules._
     import LibGdxModules._
     Seq(
-      Actors, Streams, ReactiveKafka, GdxBullet
+      Actors, Streams, ReactiveKafka,
+      GdxBullet, GdxCore, GdxHeadlessBackend, GdxNatives
     )
   }
