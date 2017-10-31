@@ -27,7 +27,7 @@ object ScalaProject extends AutoPlugin {
       "-language:higherKinds",
       "-language:implicitConversions",
       "-unchecked",
-      "-Xfatal-warnings",
+//      "-Xfatal-warnings", // Really? why would you want this on all the time?
       "-Xlint",
       "-Yno-adapted-args",
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole

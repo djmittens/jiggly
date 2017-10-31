@@ -16,6 +16,6 @@ lazy val `shard` = (project in file("shard")).
     import LibGdxModules._
     Seq(
       Actors, Streams, ReactiveKafka,
-      GdxBullet, GdxCore, GdxHeadlessBackend, GdxNatives
+      GdxBullet, GdxCore, GdxHeadlessBackend, GdxNatives, GdxBulletNatives
     )
   }
