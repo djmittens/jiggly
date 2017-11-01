@@ -1,8 +1,11 @@
 package me.ngrid.jiggly
 
 
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.{ApplicationListener, Gdx}
+import com.badlogic.gdx.backends.headless.mock.audio.MockAudio
 import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics
+import com.badlogic.gdx.backends.headless.mock.input.MockInput
+import com.badlogic.gdx.backends.headless.{HeadlessApplication, HeadlessApplicationConfiguration, HeadlessFiles, HeadlessNet}
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
@@ -12,7 +15,10 @@ import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.math.{Matrix4, Vector3}
 import com.badlogic.gdx.physics.bullet.Bullet
 import com.badlogic.gdx.physics.bullet.collision._
-import com.badlogic.gdx.utils.Disposable
+import com.badlogic.gdx.utils.{Disposable, GdxNativesLoader}
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 /**
   * in the spirit of references, this is the tutorial i am following for this class.
@@ -22,16 +28,42 @@ import com.badlogic.gdx.utils.Disposable
   */
 object BulletSandbox {
 
+  import scala.concurrent.ExecutionContext.Implicits.global
+
   def main(args: Array[String]): Unit = {
     Bullet.init(true)
-    Gdx.graphics = new MockGraphics
 
-    bulletState(checkCollision)
+    GdxNativesLoader.load()
+    Gdx.graphics = new MockGraphics()
+    Gdx.gl = new MockGL20
+    Gdx.gl20 = new MockGL20
+    Gdx.files = new HeadlessFiles()
+    Gdx.net = new HeadlessNet()
+    // the following elements are not applicable for headless applications
+    // they are only implemented as mock objects
+    Gdx.audio = new MockAudio()
+    Gdx.input = new MockInput()
+
+    val st = bulletState
+
+    try {
+      while (!checkCollision(st)) {
+        import st._
+
+        ball.transform.translate(0f, -0.1f, 0f)
+        ballObject.setWorldTransform(ball.transform)
+        println("Nope")
+      }
+      println("Yep")
+
+    } finally {
+      bulletState.dispose()
+    }
 
     ()
   }
 
-  def bulletState[T]: BulletState = {
+  def bulletState: BulletState = {
     val model = createModel
 
     val (ball, ground) = {
@@ -56,7 +88,7 @@ object BulletSandbox {
       cc -> d
     }
 
-    BulletState(model, ballShape, groundShape, ballObject, groundObject, collisionConfig, dispatcher)
+    BulletState(ball, ground, model, ballShape, groundShape, ballObject, groundObject, collisionConfig, dispatcher)
   }
 
 
@@ -64,14 +96,16 @@ object BulletSandbox {
 
     val mb = new ModelBuilder
     mb.begin()
+
     mb.node().id = "ground"
-    val p1 = mb.part("box", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position, new Material(ColorAttribute.createDiffuse(Color.RED)))
-    BoxShapeBuilder.build(p1, 5f, 1f, 5f)
-//    mb.createBox(5f, 1f, 5f, GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Normal | Usage.Position)
+    BoxShapeBuilder.build(
+      mb.part("box", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position, new Material(ColorAttribute.createDiffuse(Color.RED))),
+      5f, 1f, 5f)
+
     mb.node().id = "ball"
-//    mb.createSphere(1f, 1f, 1f, 10, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Normal | Usage.Position)
-    val p2 = mb.part("sphere", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position, new Material(ColorAttribute.createDiffuse(Color.RED)))
-    SphereShapeBuilder.build(p2, 1f, 1f, 1f, 10, 10)
+    SphereShapeBuilder.build(
+      mb.part("sphere", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position, new Material(ColorAttribute.createDiffuse(Color.RED))),
+      1f, 1f, 1f, 10, 10)
 
     mb.end
   }
@@ -89,12 +123,26 @@ object BulletSandbox {
     val co1 = new CollisionObjectWrapper(groundObject)
 
     val ci = new btCollisionAlgorithmConstructionInfo()
-        ci.setDispatcher1(dispatcher)
+    ci.setDispatcher1(dispatcher)
+    val algorithm = new btSphereBoxCollisionAlgorithm(null, ci, co0.wrapper, co1.wrapper, false)
+    val info = new btDispatcherInfo()
+    val result = new btManifoldResult(co0.wrapper, co1.wrapper)
 
-    false
+    algorithm.processCollision(co0.wrapper, co1.wrapper, info, result)
+
+    val r = result.getPersistentManifold.getNumContacts > 0
+
+    result.dispose()
+    info.dispose()
+    algorithm.dispose()
+    ci.dispose()
+    co1.dispose()
+    co0.dispose()
+
+    r
   }
 
-  case class BulletState(
+  case class BulletState( ball: ModelInstance, ground: ModelInstance,
                           model: Model,
                           ballShape: btCollisionShape,
                           groundShape: btCollisionShape,
