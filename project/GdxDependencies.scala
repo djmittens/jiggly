@@ -24,10 +24,4 @@ object GdxDependencies extends AutoPlugin {
         "com.badlogicgames.gdx" % "gdx-bullet-platform" % libGdxVersion.value classifier "natives-desktop"
     }
   }
-
-  import autoImport._
-
-  override def projectSettings: Seq[Def.Setting[_]] = Seq(
-    libGdxVersion := "1.9.7"
-  )
 }
