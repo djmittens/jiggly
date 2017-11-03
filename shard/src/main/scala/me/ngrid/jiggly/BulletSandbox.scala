@@ -1,11 +1,10 @@
 package me.ngrid.jiggly
 
-
-import com.badlogic.gdx.{ApplicationListener, Gdx}
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.headless.mock.audio.MockAudio
 import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics
 import com.badlogic.gdx.backends.headless.mock.input.MockInput
-import com.badlogic.gdx.backends.headless.{HeadlessApplication, HeadlessApplicationConfiguration, HeadlessFiles, HeadlessNet}
+import com.badlogic.gdx.backends.headless.{HeadlessFiles, HeadlessNet}
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
@@ -17,9 +16,6 @@ import com.badlogic.gdx.physics.bullet.Bullet
 import com.badlogic.gdx.physics.bullet.collision._
 import com.badlogic.gdx.utils.{Disposable, GdxNativesLoader}
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
-
 /**
   * in the spirit of references, this is the tutorial i am following for this class.
   *
@@ -27,8 +23,6 @@ import scala.concurrent.duration._
   *
   */
 object BulletSandbox {
-
-  import scala.concurrent.ExecutionContext.Implicits.global
 
   def main(args: Array[String]): Unit = {
     Bullet.init(true)
@@ -50,7 +44,7 @@ object BulletSandbox {
       while (!checkCollision(st)) {
         import st._
 
-        ball.transform.translate(0f, -0.1f, 0f)
+        ball.transform.translate(0f, -0.99f, 0f)
         ballObject.setWorldTransform(ball.transform)
         println("Nope")
       }

@@ -10,7 +10,6 @@ object ScalaProject extends AutoPlugin {
   import autoImport._
 
   override def projectSettings: Seq[Def.Setting[_]] = Seq(
-    scalaVersion := "2.12.3",
 
     // Test dependenciesk
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4",
@@ -28,6 +27,7 @@ object ScalaProject extends AutoPlugin {
       "-language:implicitConversions",
       "-unchecked",
 //      "-Xfatal-warnings", // Really? why would you want this on all the time?
+      "-Ypartial-unification", // This is for cats fun
       "-Xlint",
       "-Yno-adapted-args",
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
