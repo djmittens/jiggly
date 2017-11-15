@@ -1,10 +1,7 @@
 cancelable in ThisBuild := true
 
 inThisBuild(Seq(
-  organization := "me.ngrid",
-  scalaOrganization := "org.typelevel",
-  scalaVersion := "2.12.4-bin-typelevel-4",
-  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.4", "2.13.0-M2")
+  organization := "me.ngrid"
 ))
 
 lazy val `jiggly` = (project in file(".")).
