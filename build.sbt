@@ -1,3 +1,6 @@
+import sbt._
+import sbt.Keys._
+
 cancelable in ThisBuild := true
 
 inThisBuild(Seq(
