@@ -22,6 +22,7 @@ libGdxVersion in ThisBuild := "1.9.7"
 
 lazy val `shard` = (project in file("shard")).
   enablePlugins(
+    AmmonitePlugin,
     ScalaProject,
     CatsDependencies,
     GdxDependencies,

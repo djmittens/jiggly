@@ -1,10 +1,5 @@
 package me.ngrid.jiggly
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.backends.headless.mock.audio.MockAudio
-import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics
-import com.badlogic.gdx.backends.headless.mock.input.MockInput
-import com.badlogic.gdx.backends.headless.{HeadlessFiles, HeadlessNet}
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
@@ -12,9 +7,10 @@ import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.{BoxShapeBuilder, Spher
 import com.badlogic.gdx.graphics.g3d.{Material, Model, ModelInstance}
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.math.{Matrix4, Vector3}
-import com.badlogic.gdx.physics.bullet.Bullet
 import com.badlogic.gdx.physics.bullet.collision._
-import com.badlogic.gdx.utils.{Disposable, GdxNativesLoader}
+import com.badlogic.gdx.utils.Disposable
+
+import scala.concurrent.{Await, Future}
 
 /**
   * in the spirit of references, this is the tutorial i am following for this class.
@@ -24,37 +20,34 @@ import com.badlogic.gdx.utils.{Disposable, GdxNativesLoader}
   */
 object BulletSandbox {
 
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.duration._
+
   def main(args: Array[String]): Unit = {
-    Bullet.init(true)
+    BulletInit
 
-    GdxNativesLoader.load()
-    Gdx.graphics = new MockGraphics()
-    Gdx.gl = new MockGL20
-    Gdx.gl20 = new MockGL20
-    Gdx.files = new HeadlessFiles()
-    Gdx.net = new HeadlessNet()
-    // the following elements are not applicable for headless applications
-    // they are only implemented as mock objects
-    Gdx.audio = new MockAudio()
-    Gdx.input = new MockInput()
-
-    val st = bulletState
-
-    try {
-      while (!checkCollision(st)) {
-        import st._
-
-        ball.transform.translate(0f, -0.99f, 0f)
-        ballObject.setWorldTransform(ball.transform)
-        println("Nope")
-      }
-      println("Yep")
-
-    } finally {
-      bulletState.dispose()
+    val f = Future.traverse(0 to 1000000) { _ =>
+      val st = bulletState
+      val f = Future(simulate(st))
+      f.onComplete(_ => st.dispose())
+      f
     }
 
-    ()
+    println(Await.result(f, 20.seconds).toSet)
+  }
+
+  def simulate(st: BulletState): Int = {
+    var res = 0
+
+    while (!checkCollision(st)) {
+      import st._
+
+      ball.transform.translate(0f, -0.99f, 0f)
+      ballObject.setWorldTransform(ball.transform)
+      res += 1
+    }
+
+    res
   }
 
   def bulletState: BulletState = {
@@ -136,14 +129,14 @@ object BulletSandbox {
     r
   }
 
-  case class BulletState( ball: ModelInstance, ground: ModelInstance,
-                          model: Model,
-                          ballShape: btCollisionShape,
-                          groundShape: btCollisionShape,
-                          ballObject: btCollisionObject,
-                          groundObject: btCollisionObject,
-                          collisionConfig: btCollisionConfiguration,
-                          dispatcher: btCollisionDispatcher
+  case class BulletState(ball: ModelInstance, ground: ModelInstance,
+                         model: Model,
+                         ballShape: btCollisionShape,
+                         groundShape: btCollisionShape,
+                         ballObject: btCollisionObject,
+                         groundObject: btCollisionObject,
+                         collisionConfig: btCollisionConfiguration,
+                         dispatcher: btCollisionDispatcher
                         ) extends Disposable {
     def apply[T](f: BulletState => T): T = {
       try {
