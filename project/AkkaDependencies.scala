@@ -24,12 +24,4 @@ object AkkaDependencies extends AutoPlugin {
         libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % reactiveKafkaVersion.value
     }
   }
-
-  import autoImport._
-
-  override def projectSettings: Seq[Def.Setting[_]] = Seq(
-    akkaVersion := "2.5.6",
-    akkaHttpVersion := "10.0.10",
-    reactiveKafkaVersion := "0.17"
-  )
 }
