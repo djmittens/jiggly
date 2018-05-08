@@ -1,5 +1,5 @@
-import sbt.{Def, _}
 import sbt.Keys._
+import sbt.{Def, _}
 
 object ScalaProject extends AutoPlugin {
   override def requires: Plugins = AmmonitePlugin
@@ -7,12 +7,10 @@ object ScalaProject extends AutoPlugin {
   object autoImport {
   }
 
-  import autoImport._
-
   override def projectSettings: Seq[Def.Setting[_]] = Seq(
     scalaVersion := "2.12.3",
 
-    // Test dependenciesk
+    // Test dependencies
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test",
 

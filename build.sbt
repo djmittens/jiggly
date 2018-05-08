@@ -1,5 +1,5 @@
 lazy val `jiggly` = (project in file(".")).
-  settings (
+  settings(
     publishArtifact := false
   ).
   aggregate(`shard`)
@@ -12,7 +12,11 @@ lazy val `shard` = (project in file("shard")).
   settings {
     import AkkaModules._
     import LibGdxModules._
-    Seq(
-      Actors, Streams, ReactiveKafka, GdxBullet
-    )
+
+    (libraryDependencies += "org.hdfgroup" % "hdf-java" % "2.6.1") ::
+      Actors ::
+      Streams ::
+      ReactiveKafka ::
+      GdxBullet ::
+      Nil
   }
