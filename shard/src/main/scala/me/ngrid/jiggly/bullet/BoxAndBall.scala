@@ -1,8 +1,5 @@
-package me.ngrid.jiggly
+package me.ngrid.jiggly.bullet
 
-import java.lang.reflect.Constructor
-
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.VertexAttributes.Usage
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder

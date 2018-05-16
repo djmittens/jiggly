@@ -29,15 +29,19 @@ lazy val `shard` = (project in file("shard")).
     GdxDependencies,
     AkkaDependencies).
   settings(
-    (libraryDependencies += "org.hdfgroup" % "hdf-java" % "2.6.1") :: {
+    libraryDependencies += "com.typesafe.slick" %% "slick" % "3.2.3",
+    libraryDependencies += "com.typesafe.slick" %% "slick-hikaricp" % "3.2.3",
+    libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.21.0.1",
+    // Useful for cod egeneration.
+    libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % "3.2.3",
+    libraryDependencies += "org.hdfgroup" % "hdf-java" % "2.6.1", {
       import AkkaModules._
       Actors :: Streams :: ReactiveKafka :: Nil
-    } ::: {
+    }, {
       import LibGdxModules._
       GdxBullet :: GdxCore :: GdxHeadlessBackend :: GdxNatives :: GdxBulletNatives :: Nil
-    } ::: {
+    }, {
       import CatsDependencies.autoImport.CatsModules._
-
       CatsCore :: CatsKernel :: CatsMacros :: Nil
     }
   )

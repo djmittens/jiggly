@@ -1,12 +1,13 @@
-package me.ngrid.jiggly
+package me.ngrid.jiggly.bullet
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.headless.mock.audio.MockAudio
-import com.badlogic.gdx.backends.headless.{HeadlessFiles, HeadlessNet}
 import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics
 import com.badlogic.gdx.backends.headless.mock.input.MockInput
+import com.badlogic.gdx.backends.headless.{HeadlessFiles, HeadlessNet}
 import com.badlogic.gdx.physics.bullet.Bullet
 import com.badlogic.gdx.utils.GdxNativesLoader
+import me.ngrid.jiggly.MockGL20
 
 object BulletInit {
 
