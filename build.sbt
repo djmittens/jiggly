@@ -52,6 +52,8 @@ lazy val `colors` = (project in file("colors")).
   // Useful for cod egeneration.
   libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % "3.2.3",
   libraryDependencies += "org.hdfgroup" % "hdf-java" % "2.6.1",
+  // Alpakka
+  libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-slick" % "0.19",
   {
     import AkkaModules._
     Actors :: Streams :: Nil
