@@ -1,4 +1,4 @@
-package me.ngrid.jiggly.colors
+package me.ngrid.colors
 
 import slick.jdbc.SQLiteProfile.api._
 
@@ -9,13 +9,13 @@ object SurveyResults {
 }
 
 object GenerateServeyResults {
-  def main(args: Array[Byte]): Unit = {
+  def main(args: Array[String]): Unit = {
     slick.codegen.SourceCodeGenerator.main(
       "slick.jdbc.SQLiteProfile" ::
-        "scala.slick.driver.SQLiteDriver" ::
+        "org.sqlite.JDBC" ::
         "jdbc:sqlite:data/jigglydat.sqlite" ::
-        "src/main/scala/" ::
-        "me.ngrid.jiglly.color" ::
+        "colors/src/main/scala/" ::
+        "me.ngrid.jiggly.colors.survey" ::
         Nil toArray
     )
   }
