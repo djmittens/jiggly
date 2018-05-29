@@ -55,7 +55,7 @@ object PrintResults {
   }
 }
 
-object GenerateServeyResults {
+object GenerateSurveyCode {
   def main(args: Array[String]): Unit = {
     slick.codegen.SourceCodeGenerator.run(
       "slick.jdbc.SQLiteProfile",
